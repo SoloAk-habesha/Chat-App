@@ -29,7 +29,7 @@ passport.use(
 
         // Check if user already exists in our db
         let user = await User.findOne({ email });
-        console.log(user);
+
         if (user) {
           if (!user.verified) {
             user.verified = true;

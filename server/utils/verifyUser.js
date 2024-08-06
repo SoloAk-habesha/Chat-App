@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
-import { errorHandler } from "./error.js";
-import User from "../models/User.js"; // Import your user model
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const { errorHandler } = require("./error");
 
-export const verifyToken = async (req, res, next) => {
+const verifyToken = async (req, res, next) => {
   const token = req.cookies.access_token;
 
   if (!token) return next(errorHandler(401, "Unauthorized"));
@@ -11,10 +11,8 @@ export const verifyToken = async (req, res, next) => {
     if (err) return next(errorHandler(401, "Unauthorized"));
 
     try {
-      // Assuming the decoded token includes userId
       const userId = decoded.userId;
 
-      // Retrieve the user model
       const user = await User.findById(userId);
       if (!user) return next(errorHandler(404, "User not found"));
 
@@ -25,3 +23,5 @@ export const verifyToken = async (req, res, next) => {
     }
   });
 };
+
+module.exports = { verifyToken };

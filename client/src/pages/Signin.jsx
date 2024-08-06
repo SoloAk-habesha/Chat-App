@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { signInUser } from "../redux/user/userSlice";
 import InputField from "../components/InputField";
 import Alert from "../components/Alert";
 import GoogleAuthButton from "../components/GoogleAuthButton";
@@ -9,53 +10,38 @@ import { FaSpinner } from "react-icons/fa";
 const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
-    setSuccessMessage("");
-    try {
-      const response = await axios.post("/api/auth/login", { email, password });
-      console.log(response.data);
-      localStorage.setItem("token", response.data);
-      setSuccessMessage("Login successful.");
-      navigate("/profile");
-    } catch (error) {
-      console.log(error);
-      setError("Invalid credentials or email not verified.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  const handleGoogleAuthClick = () => {
-    setIsGoogleLoading(true);
-    window.location.href = "/api/auth/google";
+  const { currentUser, error, loading } = useSelector((state) => state.user);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(signInUser({ email, password }));
   };
 
   useEffect(() => {
-    if (error || successMessage) {
+    if (currentUser) {
       const timer = setTimeout(() => {
-        setError("");
-        setSuccessMessage("");
+        navigate("/profile");
+      }, 3000); // 3 seconds delay
+      return () => clearTimeout(timer);
+    }
+  }, [currentUser, navigate]);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        // clear error after 6 seconds
       }, 6000);
       return () => clearTimeout(timer);
     }
-  }, [error, successMessage]);
+  }, [error]);
 
   return (
     <>
-      {(error || successMessage) && (
-        <Alert
-          message={error || successMessage}
-          type={successMessage ? "success" : "error"}
-        />
-      )}
+      {error && <Alert message={error} type="error" />}
+      {currentUser && <Alert message="Login successful." type="success" />}
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form className="space-y-6" onSubmit={handleSubmit}>
@@ -68,7 +54,7 @@ const Signin = () => {
                 label="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                error={error}
+                error={null}
                 placeholder="abebebekele12@gmail.com"
               />
             </div>
@@ -83,7 +69,7 @@ const Signin = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                error={error}
+                error={null}
                 placeholder="********"
               />
             </div>
@@ -93,9 +79,9 @@ const Signin = () => {
             <button
               type="submit"
               className="w-full bg-indigo-500 text-white px-4 py-2 rounded flex items-center justify-center"
-              disabled={isLoading}
+              disabled={loading}
             >
-              {isLoading ? (
+              {loading ? (
                 <>
                   <FaSpinner className="animate-spin mr-2" />
                   Logging in ...
@@ -108,13 +94,12 @@ const Signin = () => {
         </form>
 
         <div className="my-4 text-center">or</div>
-        <GoogleAuthButton
-          text="Log In with Google"
-          isLoading={isGoogleLoading}
-          onClick={handleGoogleAuthClick}
-        />
+        <GoogleAuthButton text="Log In with Google" />
         <div className="mt-4 text-center">
-          <Link to="/forgot-password" className="text-indigo-500 text-sm">
+          <Link
+            to="/forgot-password"
+            className="text-indigo-500 text-sm hover:underline"
+          >
             Forgot Password?
           </Link>
         </div>

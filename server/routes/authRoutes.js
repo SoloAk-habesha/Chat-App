@@ -13,6 +13,7 @@ const {
   checkPassword,
   generateAndSetToken,
 } = require("../utils/auth.utils.js");
+const { verifyToken } = require("../utils/verifyUser.js");
 require("dotenv").config();
 
 // Path to the email template
@@ -35,7 +36,6 @@ const errorHandler = (statusCode, message) => {
 // Signup route
 router.post("/signup", async (req, res, next) => {
   try {
-    console.log(req.body);
     const { email, password, name } = req.body;
     // Check if email is already registered
     let user = await User.findOne({ email });
@@ -66,7 +66,7 @@ router.post("/signup", async (req, res, next) => {
 
     const hashedPassword = await hashPassword(password);
     const verificationToken = crypto.randomBytes(32).toString("hex");
-    console.log(password);
+
     user = new User({
       email,
       name,
@@ -98,7 +98,7 @@ router.post("/signup", async (req, res, next) => {
 router.get("/verify/:token", async (req, res, next) => {
   try {
     const user = await User.findOne({ verificationToken: req.params.token });
-    console.log(user);
+
     if (!user) return next(errorHandler(400, "Invalid token."));
 
     user.verified = true;
@@ -168,7 +168,6 @@ router.post("/login", async (req, res, next) => {
 
     res.status(200).json(userData);
   } catch (error) {
-    console.log(error);
     console.error(error); // Log error for debugging
     next(errorHandler(500, "Server error"));
   }
@@ -179,6 +178,7 @@ router.get(
   "/google",
   passport.authenticate("google", {
     scope: ["profile", "email"],
+    prompt: "select_account",
   })
 );
 
@@ -187,20 +187,36 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     failureRedirect: "/auth",
-    session: true,
+    session: false,
   }),
   (req, res, next) => {
     try {
       generateAndSetToken(req.user._id, res);
       const { password: _, ...userData } = req.user._doc;
+
       res.redirect(`${process.env.FRONTEND_URL}/profile`);
     } catch (error) {
+      console.log(error);
       console.error(error); // Log error for debugging
       next(errorHandler(500, "Server error"));
     }
   }
 );
 
+// Route to get user information
+router.get("/me", verifyToken, async (req, res, next) => {
+  try {
+    // Fetch user details from the database
+    const user = await User.findById(req.user).select("-password");
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 // Logout route
 router.get("/logout", (req, res, next) => {
   res.clearCookie("access_token");
