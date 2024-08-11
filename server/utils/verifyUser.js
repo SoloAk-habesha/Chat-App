@@ -12,7 +12,6 @@ const verifyToken = async (req, res, next) => {
 
     try {
       const userId = decoded.userId;
-
       const user = await User.findById(userId);
       if (!user) return next(errorHandler(404, "User not found"));
 

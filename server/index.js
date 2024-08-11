@@ -2,8 +2,9 @@ const express = require("express");
 const passport = require("passport");
 const session = require("express-session");
 const mongoose = require("mongoose");
-const authRoutes = require("./routes/authRoutes.js"); // Adjust the path to your auth routes
-require("./config/passport.js"); // Import passport configuration
+const authRoutes = require("./routes/authRoutes.js");
+const userRoute = require("./routes/userRoute.js");
+require("./config/passport.js");
 const cookieParser = require("cookie-parser");
 const app = express();
 const cors = require("cors");
@@ -32,10 +33,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Use auth routes
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoute);
 
-// Error handling middleware
 app.use((error, req, res, next) => {
   const statusCode = error.statusCode || 500;
   res.status(statusCode).json({

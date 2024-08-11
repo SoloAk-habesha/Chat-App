@@ -38,6 +38,20 @@ module.exports = withMT({
           info: "#3B82F6",
         },
       },
+      keyframes: {
+        "fade-out-down": {
+          "0%": {
+            opacity: 1,
+          },
+          "100%": {
+            opacity: 0,
+            transform: "translate3d(0, 100%, 0)",
+          },
+        },
+      },
+      animation: {
+        fadeoutdown: "fade-out-down 1s ease-in-out 0.25s 1",
+      },
     },
   },
   darkMode: "class",

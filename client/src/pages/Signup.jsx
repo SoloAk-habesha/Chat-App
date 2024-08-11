@@ -9,6 +9,7 @@ import Alert from "../components/Alert";
 import InputField from "../components/InputField";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import { FaSpinner } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -17,7 +18,7 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-
+  const navigate = useNavigate();
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -51,13 +52,12 @@ const Signup = () => {
         email,
         password,
       });
-      console.log(response);
+
       setSuccessMessage(
         "Signup successful. Please check your email for verification."
       );
       navigate("/auth");
     } catch (error) {
-      console.log(error);
       setError(
         error.response ? error.response.data.message : "Error during signup."
       );
@@ -66,7 +66,6 @@ const Signup = () => {
     }
   };
 
-  // Clear alert after 3 seconds
   useEffect(() => {
     if (error || successMessage) {
       const timer = setTimeout(() => {
@@ -76,11 +75,6 @@ const Signup = () => {
       return () => clearTimeout(timer);
     }
   }, [error, successMessage]);
-
-  const handleGoogleAuthClick = () => {
-    setIsGoogleLoading(true);
-    window.location.href = "/api/auth/google";
-  };
 
   return (
     <>
@@ -157,11 +151,7 @@ const Signup = () => {
         </form>
 
         <div className="my-4 text-center">or</div>
-        <GoogleAuthButton
-          text="Signup with Google"
-          isLoading={isGoogleLoading}
-          onClick={handleGoogleAuthClick}
-        />
+        <GoogleAuthButton text="Signup with Google" />
       </div>
     </>
   );

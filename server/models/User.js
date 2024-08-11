@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema(
   {
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
-    password: { type: String },
+    password: { type: String, required: true },
     profile: {
       type: String,
       default:
@@ -15,6 +15,19 @@ const userSchema = new mongoose.Schema(
     resetToken: { type: String },
     resetTokenExpires: { type: Date },
     googleId: { type: String },
+    coverPhoto: {
+      type: String,
+      default:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZSN9l2HFI-fPjJniiWjBs-oMXWgzE1bVw_g&s",
+    },
+    profilePicture: {
+      type: String,
+      default:
+        "https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTAxL3JtNjA5LXNvbGlkaWNvbi13LTAwMi1wLnBuZw.png",
+    },
+    phone: { type: String, trim: true },
+    biography: { type: String, trim: true },
+    dateOfBirth: { type: Date },
   },
   { timestamps: true }
 );
