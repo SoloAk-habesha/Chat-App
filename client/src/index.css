@@ -8,3 +8,17 @@
 body {
   font-family: "Inter", sans-serif;
 }
+
+/* Global styles or in a specific CSS file */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+i {
+  font-size: 18px;
+  color: rgb(107, 114, 128);
+}
+
+[data-theme="dark"] i {
+  color: rgb(144, 152, 166);
+}

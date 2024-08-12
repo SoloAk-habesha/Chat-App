@@ -52,8 +52,35 @@ module.exports = withMT({
       animation: {
         fadeoutdown: "fade-out-down 1s ease-in-out 0.25s 1",
       },
+      scrollbar: {
+        thin: {
+          /* Hide scrollbar for webkit browsers */
+          "scrollbar-width": "none" /* Firefox */,
+          "-ms-overflow-style": "none" /* IE and Edge */,
+        },
+      },
     },
   },
   darkMode: "class",
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        ".no-scrollbar": {
+          overflow: "hidden",
+          "scrollbar-width": "none" /* Firefox */,
+          "-ms-overflow-style": "none" /* IE and Edge */,
+        },
+        ".scrollbar-thin": {
+          overflow: "auto",
+          "scrollbar-width": "thin" /* Firefox */,
+          "-ms-overflow-style": "auto" /* IE and Edge */,
+        },
+        ".scrollbar-hidden": {
+          overflow: "auto",
+          "scrollbar-width": "none" /* Firefox */,
+          "-ms-overflow-style": "none" /* IE and Edge */,
+        },
+      });
+    },
+  ],
 });

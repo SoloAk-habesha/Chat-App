@@ -4,6 +4,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import AuthTabs from "./pages/AuthTabs";
 import Profile from "./pages/Profile";
+import Chat from "./pages/Chat";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/verify/:token" element={<VerifyEmail />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
     </Router>
   );
