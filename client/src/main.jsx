@@ -8,12 +8,15 @@ import { Provider } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "./redux/store";
+import { SocketContextProvider } from "./context/SocketContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <ThemeProvider value={customTheme}>
-        <App />
+        <SocketContextProvider>
+          <App />
+        </SocketContextProvider>
         <ToastContainer />
       </ThemeProvider>
     </PersistGate>

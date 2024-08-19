@@ -39,6 +39,11 @@ module.exports = withMT({
         },
       },
       keyframes: {
+        wave: {
+          "0%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10%)" },
+          "100%": { transform: "translateY(0)" },
+        },
         "fade-out-down": {
           "0%": {
             opacity: 1,
@@ -50,6 +55,7 @@ module.exports = withMT({
         },
       },
       animation: {
+        wave: "wave 1s ease-in-out infinite",
         fadeoutdown: "fade-out-down 1s ease-in-out 0.25s 1",
       },
       scrollbar: {

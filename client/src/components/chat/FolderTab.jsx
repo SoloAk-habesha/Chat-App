@@ -9,17 +9,17 @@ import {
 import ChatList from "./ChatList";
 
 export default function FolderTab() {
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("message");
   const data = [
     {
       label: "All",
       value: "all",
-      desc: <ChatList />,
+      desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos ab nam vel ratione consequatur laudantium, ipsam laboriosam ea magni exercitationem fugit cupiditate suscipit explicabo. Reprehenderit autem expedita laudantium corrupti distinctio.",
     },
     {
       label: "Message",
       value: "message",
-      desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos ab nam vel ratione consequatur laudantium, ipsam laboriosam ea magni exercitationem fugit cupiditate suscipit explicabo. Reprehenderit autem expedita laudantium corrupti distinctio.",
+      desc: <ChatList />,
     },
     {
       label: "Groups",
@@ -39,12 +39,15 @@ export default function FolderTab() {
   ];
 
   return (
-    <Tabs value={activeTab} className="flex flex-col h-full">
+    <Tabs
+      value={activeTab}
+      className="flex flex-col h-full divide-y-2 divide-gray-300"
+    >
       <TabsHeader
-        className="flex sticky overflow-x-auto scrollbar-hidden border-b-2 border-gray-300 bg-gray-100 top-0 z-10 py-0 whitespace-nowrap"
+        className="  flex-nowrap overflow-x-auto  scrollbar-hidden whitespace-nowrap border-gray-300 bg-gray-100"
         indicatorProps={{
           className:
-            "border-b-[3px]   font-medium bg-indigo-50 border-indigo-700 shadow-none rounded-none transition duration-300 ease-in-out",
+            "border-b-[3px] font-medium bg-indigo-50 border-indigo-700 shadow-none rounded-none transition duration-300 ease-in-out",
         }}
       >
         {data.map(({ label, value }) => (
@@ -52,7 +55,9 @@ export default function FolderTab() {
             key={value}
             value={value}
             onClick={() => setActiveTab(value)}
-            className={` py-0 px-4 bg-gray-100 transition duration-300 ease-in-out`}
+            className={`py-1 px-3 bg-gray-100 transition duration-300 ease-in-out ${
+              activeTab === value ? "text-indigo-700" : "text-gray-700"
+            }`}
           >
             {label}
           </Tab>
@@ -67,7 +72,7 @@ export default function FolderTab() {
               activeTab === value ? "opacity-100" : "opacity-0"
             }`}
           >
-            <div className="h-full max-h-[calc(100vh-140px)]  overflow-y-auto scrollbar-hidden">
+            <div className="h-full max-h-[calc(100vh-140px)] overflow-y-auto scrollbar-hidden">
               {desc}
             </div>
           </TabPanel>
